@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=--std=c99 -Wall -O3 -pedantic
+CFLAGS=--std=c99 -Wall -pedantic
 LIBS=-lpthread
 
 all: ep clear
