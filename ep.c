@@ -16,7 +16,7 @@ int block_size;
 int compM;
 
 void * run (void * arg) {
-    int line = *((int *) arg);
+    int line = (int) arg;
     int end = line + block_size > n ? n : line + block_size;
 
     for (int i = line; i < end; i++) {
@@ -25,6 +25,7 @@ void * run (void * arg) {
             mat2[i][j][0]--;
             pthread_mutex_unlock (&mut[i][j]);
             for (int k = 0; k < 4; k++) {
+                if (i + is[k] < 0 || i + is[k] >= n || j + js[k] < 0 || j + js[k] >= m);
                 pthread_mutex_lock (&mut[i + is[k]][j + js[k]]);
                 mat2[i + is[k]][j + js[k]][0]++;
                 pthread_mutex_unlock (&mut[i + is[k]][j + js[k]]);
@@ -52,10 +53,11 @@ int main (int argc, char * argv[]) {
     //read_matrix (argv[1]);
     //iter = atoi (argv[3]);
     //threads = atoi (argv[4]) * THREADS_PER_PROC;
+    threads = atoi (argv[1]) * THREADS_PER_PROC;
 
-    n = 4; m = 4;
+    n = 8; m = 8;
     
-    block_size = n / threads + 1; //problema em aberto
+    block_size = 2; //problema em aberto
 
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
@@ -71,7 +73,6 @@ int main (int argc, char * argv[]) {
             printf ("%d ", mat2[i][j][0]);
         printf ("\n");
     }
-    printf ("\n");
 
     return 0;
 }
