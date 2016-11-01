@@ -25,7 +25,7 @@ void* run (void* p) {
             mat2[i][j][0]--;
             pthread_mutex_unlock (&mut[i][j]);
             for (int k = 0; k < 4; k++) {
-                if (i + is[k] < 0 || i + is[k] >= n || j + js[k] < 0 || j + js[k] >= m);
+                if (i + is[k] < 0 || i + is[k] >= n || j + js[k] < 0 || j + js[k] >= m)
                 pthread_mutex_lock (&mut[i + is[k]][j + js[k]]);
                 mat2[i + is[k]][j + js[k]][0]++;
                 pthread_mutex_unlock (&mut[i + is[k]][j + js[k]]);
