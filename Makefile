@@ -1,2 +1,2 @@
-ep: 
-	g++ -fpermissive ep.c -o ep -lpthread
+ep: ep.c
+	gcc ep.c -o ep -lpthread
