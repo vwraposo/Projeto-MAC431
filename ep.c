@@ -15,8 +15,8 @@ int iter, threads;
 int block_size;
 int compM;
 
-void * run (void * arg) {
-    int line = (int) arg;
+void* run (void* p) {
+    int line = *((int *) p);
     int end = line + block_size > n ? n : line + block_size;
 
     for (int i = line; i < end; i++) {
@@ -32,6 +32,9 @@ void * run (void * arg) {
             }
         }
     }
+    free (p);
+
+    return NULL;
 }
 
 void read_matrix (char* entrada) {
@@ -55,7 +58,8 @@ int main (int argc, char * argv[]) {
     //threads = atoi (argv[4]) * THREADS_PER_PROC;
     threads = atoi (argv[1]) * THREADS_PER_PROC;
 
-    n = 8; m = 8;
+    int *aux;
+    n = 4; m = 4;
     
     block_size = 2; //problema em aberto
 
@@ -65,7 +69,12 @@ int main (int argc, char * argv[]) {
         }
     }
 
-    for (int i = 0; i < threads; i++) pthread_create (&tids[i], NULL, run, i * block_size);
+    for (int i = 0; i < threads; i++) {
+        aux = malloc (sizeof (int));
+        *aux = i * block_size;
+        pthread_create (&tids[i], NULL, run, aux);
+    }
+
     for (int i = 0; i < threads; i++) pthread_join (tids[i], NULL);
 
     for (int i = 0; i < n; i++) { 
