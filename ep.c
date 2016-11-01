@@ -16,7 +16,7 @@ int block_size;
 int compM;
 
 void * run (void * arg) {
-    int line = *(int *) arg;
+    int line = *((int *) arg);
     int end = line + block_size > n ? n : line + block_size;
 
     for (int i = line; i < end; i++) {
