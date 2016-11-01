@@ -1,14 +1,17 @@
 CC=gcc
-CFLAGS=--std=c99 -Wall -pedantic
-LIBS=-lpthread
+CFLAGS= -ansi --std=gnu99 -Wall -pedantic -pthread
 
 all: ep clear
 
 clear:
-	rm -f *.o
+	rm -f *.o ep_barrier ep_mutex
 
-ep: ep.o
-	$(CC) $(CFLAGS) $^ -o $@ $(LIBS) 
+ep_barrier: ep_barrier.o
+	$(CC) $(CFLAGS) $^ -o $@
 
-ep.o: ep.c
+ep_barrier.o: ep_barrier.c
 
+ep_mutex: ep_mutex.o
+	$(CC) $(CFLAGS) $^ -o $@
+
+ep_mutex.o: ep_mutex.c

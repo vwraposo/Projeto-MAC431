@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-#define SIZE 5000
+#define SIZE 1000
 
 const int THREADS_PER_PROC = 2;
 const int is[] = {0, 1, 0, -1};
@@ -22,7 +22,6 @@ int die;
 pthread_mutex_t line_mut;
 
 void* run (void* p) {
-    int id = p;
     while (1) {
         pthread_mutex_lock (&line_mut);
         if (free_line >= n && die == 0) {
@@ -92,7 +91,7 @@ int main (int argc, char * argv[]) {
     }
 
     for (int i = 0; i < threads; i++) {
-        pthread_create (&tids[i], NULL, run, i);
+        pthread_create (&tids[i], NULL, run, NULL);
     }
 
     for (int i = 0; i < threads; i++) pthread_join (tids[i], NULL);
