@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-#define SIZE 1000
+#define SIZE 10005
 
 const int THREADS_PER_PROC = 2;
 const int is[] = {0, 1, 0, -1};
@@ -77,7 +77,7 @@ int main (int argc, char * argv[]) {
     }
     threads = atoi (argv[1]) * THREADS_PER_PROC;
 
-    n = m = SIZE;
+    n = m = 1000;
 
     block_size = 2; //problema em aberto
     free_line = 0;

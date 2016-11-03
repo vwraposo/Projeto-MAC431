@@ -1,10 +1,10 @@
 CC=gcc
 CFLAGS= -ansi --std=gnu99 -Wall -pedantic -pthread
 
-all: ep clear
+all: ep_barrier ep_mutex clear
 
 clear:
-	rm -f *.o ep_barrier ep_mutex
+	rm -f *.o
 
 ep_barrier: ep_barrier.o
 	$(CC) $(CFLAGS) $^ -o $@

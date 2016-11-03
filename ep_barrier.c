@@ -2,22 +2,24 @@
 #include <stdlib.h>
 #include <pthread.h>
 
+
 #define TRUE 1
 #define FALSE 0
-#define LINE_HEIGHT 2
-#define THREADS_PER_PROC 2
+#define LINE_HEIGHT 10
+#define THREADS_PER_PROC 3
+#define SIZE 10005
 
 const int is[] = {0, 1, 0, -1};
 const int js[] = {1, 0, -1, 0};
 
-int mat[500][500][3];
-int mat2[500][500][3];
+int mat[SIZE][SIZE][3];
+int mat2[SIZE][SIZE][3];
 pthread_t tids[50];
-pthread_mutex_t mut[500][500], mut_next;
+//pthread_mutex_t mut[SIZE][SIZE];
+pthread_mutex_t mut_next;
 pthread_barrier_t barrier;
 int n, m;
 int iter, threads;
-int block_size;
 int compM;
 int next1, next2;
 
@@ -34,16 +36,18 @@ void* run (void* p) {
         if (end) break;
 
         i = line;
-        while (i < n && i < line - LINE_HEIGHT) {
+        while (i < n && i < line + LINE_HEIGHT) {
             for (j = 0; j < m; j++) {
                 mat2[i][j][0]--;
                 for (k = 0; k < 4; k++) {
-                    if (i + is[k] < 0 || i + is[k] >= n || j + js[k] < 0 || j + js[k] >= m)
-                        mat2[i + is[k]][j + js[k]][0]++;
+                    if (i + is[k] < 0 || i + is[k] >= n || j + js[k] < 0 || j + js[k] >= m) continue;
+		    mat2[i + is[k]][j + js[k]][0]++;
                 }
             }
             i++;
         }
+	
+	sleep (0.1);
 
     }
     // BARRIERA
@@ -58,12 +62,12 @@ void* run (void* p) {
         if (end) break;
 
         i = line;
-        while (i < n && i < line - LINE_HEIGHT) {
+        while (i < n && i < line + LINE_HEIGHT) {
             for (j = 0; j < m; j++) {
                 mat2[i][j][0]--;
                 for (k = 0; k < 4; k++) {
-                    if (i + is[k] < 0 || i + is[k] >= n || j + js[k] < 0 || j + js[k] >= m)
-                        mat2[i + is[k]][j + js[k]][0]++;
+                    if (i + is[k] < 0 || i + is[k] >= n || j + js[k] < 0 || j + js[k] >= m) continue;
+		    mat2[i + is[k]][j + js[k]][0]++;
                 }
             }
             i++;
@@ -94,26 +98,23 @@ int main (int argc, char * argv[]) {
     //iter = atoi (argv[3]);
     //threads = atoi (argv[4]) * THREADS_PER_PROC;
     threads = atoi (argv[1]) * THREADS_PER_PROC;
-    printf ("AQUI\n");
+	printf ("THREADS: %d\n", threads);
 
-    int *aux;
-    n = 100; 
-    m = 100;
+    n = 10000; 
+    m = 10000;
 
     // Inicializacao
     pthread_mutex_init (&mut_next, NULL);
     pthread_barrier_init (&barrier, NULL, threads);
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
-            pthread_mutex_init (&mut[i][j], NULL);
-        }
-    }
+   // for (int i = 0; i < n; i++) {
+     //   for (int j = 0; j < m; j++) {
+       //     pthread_mutex_init (&mut[i][j], NULL);
+      //  }
+   // }
     next1 = 0;
     next2 = LINE_HEIGHT;
 
     for (int i = 0; i < threads; i++) {
-        aux = malloc (sizeof (int));
-        *aux = i * block_size;
         pthread_create (&tids[i], NULL, run, NULL);
     }
 
