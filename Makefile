@@ -1,13 +1,12 @@
-CC=gcc
+CC=g++-6
 CFLAGS= -ansi --std=gnu99 -Wall -pedantic -pthread
 
-all: ep clear
+all: ep
 
 clear:
 	rm -f *.o
 
-ep: ep_barrier.o
-	$(CC) $(CFLAGS) $^ -o $@
-
-ep_barrier.o: ep_barrier.c
+ep: ep.cpp
+	$(CC) -fopenmp $^
+	mv a.out ep
 
