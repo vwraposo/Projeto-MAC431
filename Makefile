@@ -9,4 +9,3 @@ clear:
 ep: ep.cpp
 	$(CC) -fopenmp $^
 	mv a.out ep
-
