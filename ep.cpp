@@ -3,22 +3,26 @@
 #include <cstdlib>
 #include <atomic>
 #include <iostream>
+#include <algorithm>
 #include <time.h>
 #include <cmath>
 
 #define MAX 10005
+#define space << " " << 
 
 #define R 0
 #define G 1
 #define B 2
 
+// Nao sabemos o que fazer, deixar 255 com atomic<int> perde muita precisao 
+// mas nao tem atomic double, entao talvez usar critical do open mp
 
 const int is[] = {0, 1, 0, -1};
 const int js[] = {1, 0, -1, 0};
 
 int n, m, compM;
-std::atomic <int> mat[MAX][MAX][3];
-std::atomic <int> mat2[MAX][MAX][3];
+std::atomic<int> mat[MAX][MAX][3];
+std::atomic<int> mat2[MAX][MAX][3];
 
 void read_matrix (char* entrada) {
     FILE *in = fopen(entrada, "r");
@@ -36,23 +40,54 @@ void read_matrix (char* entrada) {
 }
 
 void operacao (int i, int j) {
-    mat2[i][j][R]--;
-    mat2[i][j][G]--;
-    mat2[i][j][B]--;
+    double angle = 2 * M_PI * mat[i][j][G] / 255.;
+    double s = abs (sin (angle));
+    double c = abs (cos (angle));
+    double send[4];
+    int send_cor[4];
+
+    std::cout << s space c << std::endl;
+
+    if (angle >= 0 && angle <= M_PI) {
+        // Vermelho na direita, azul na esquerda
+        send[0] = mat[i][j][R] * s; send_cor[0] = R;
+        send[2] = mat[i][j][B] * s; send_cor[2] = B;
+    } else {
+        // Azul na direita, vermelho na esquerda
+        send[0] = mat[i][j][B] * s; send_cor[0] = B;
+        send[2] = mat[i][j][R] * s; send_cor[2] = R;
+    }
+    if (angle >= M_PI_2 && angle <= 3 * M_PI_2) {
+        // Vermelho está embaixo, azul em cima
+        send[1] = mat[i][j][R] * c; send_cor[1] = R;
+        send[3] = mat[i][j][B] * c; send_cor[3] = B;
+    } else {
+        // Vermelho está em cima, azul está embaixo
+        send[1] = mat[i][j][B] * c; send_cor[1] = B;
+        send[3] = mat[i][j][R] * c; send_cor[3] = R;
+    }
+
     for (int k = 0; k < 4; k++) {
-         //Verficar se e melhor fazer o if assim ou ao contrario
-         //para manter o pipeline
-        if (!(i + is[k] < 0 || i + is[k] >= n || j + js[k] < 0 || j + js[k] >= m)) {
-            mat2[i + is[k]][j + js[k]][R]++;
-            mat2[i + is[k]][j + js[k]][G]++;
-            mat2[i + is[k]][j + js[k]][B]++;
+        int nx = i + is[k];
+        int ny = j + js[k];
+        if (!(nx < 0 || nx >= n || ny < 0 || ny >= m)) {
+            int delta = (255 - mat[nx][ny][send_cor[k]]) * send[k] / 1020;  
+            mat2[i][j][send_cor[k]].fetch_sub (delta);
+            mat2[nx][ny][send_cor[k]].fetch_add (delta);
         }
     }
-    
-    
+
 }
 
+int getGreen (int i, int j) {      
+    double angle = M_PI_2 - atan2 ((int) mat2[i][j][B], (int) mat2[i][j][R]); 
+    std::cout << angle << std::endl;
+    return ((int) (angle * 255 / (2 * M_PI)) + mat[i][j][G]) % 256;
+}
+
+
 int main (int argc, char** argv) {
+    std::ios::sync_with_stdio (false);
     if (argc != 5) {
         fprintf (stderr, "Uso: ./ep  <entrada> <saida> <iter> <num CPU>\n");
         return EXIT_FAILURE;
@@ -65,20 +100,45 @@ int main (int argc, char** argv) {
     // OpenMP initialization
     omp_set_num_threads (num_threads);
 
-    n = m = 10000;
+    n = m = 4;
+    mat[2][2][R] = 255;
+    mat2[2][2][R] = 255;
 
-
-    for (int it = 0; it < iter; it++)
+    for (int it = 0; it < iter; it++) {
         #pragma omp parallel for
         for (int i = 0; i < n; i++) 
             for (int j = 0; j < m; j++) 
                 operacao (i, j);
+        
+        #pragma omp parallel for
+        for (int i = 0; i < n; i++) 
+            for (int j = 0; j < m; j++) {
+                mat[i][j][R].store (mat2[i][j][R]);
+                mat[i][j][B].store (mat2[i][j][B]);
+                mat[i][j][G].store (getGreen (i, j));
+            }
+    }
 
-    //for (int i = 0; i < n; i++) { 
-        //for (int j = 0; j < m; j++) 
-            //std::cout << mat2[i][j][0] << " ";
-        //std::cout << std::endl;
-    //}
+    std::cout << "RED" << std::endl;
+    for (int i = 0; i < n; i++) { 
+        for (int j = 0; j < m; j++) 
+            std::cout << mat[i][j][R] << " ";
+        std::cout << std::endl;
+    }
+        std::cout << std::endl;
+    std::cout << "BLUE" << std::endl;
+    for (int i = 0; i < n; i++) { 
+        for (int j = 0; j < m; j++) 
+            std::cout << mat[i][j][B] << " ";
+        std::cout << std::endl;
+    }
+        std::cout << std::endl;
+    std::cout << "GREEN" << std::endl;
+    for (int i = 0; i < n; i++) { 
+        for (int j = 0; j < m; j++) 
+            std::cout << mat[i][j][G] << " ";
+        std::cout << std::endl;
+    }
 
     return EXIT_SUCCESS;
 }
