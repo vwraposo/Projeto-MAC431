@@ -4,8 +4,9 @@
 #include <atomic>
 #include <iostream>
 #include <time.h>
+#include <cmath>
 
-#define MAX 105
+#define MAX 10005
 
 #define R 0
 #define G 1
@@ -39,14 +40,16 @@ void operacao (int i, int j) {
     mat2[i][j][G]--;
     mat2[i][j][B]--;
     for (int k = 0; k < 4; k++) {
-        // Verficar se e melhor fazer o if assim ou ao contrario
-        // para manter o pipeline
+         //Verficar se e melhor fazer o if assim ou ao contrario
+         //para manter o pipeline
         if (!(i + is[k] < 0 || i + is[k] >= n || j + js[k] < 0 || j + js[k] >= m)) {
             mat2[i + is[k]][j + js[k]][R]++;
             mat2[i + is[k]][j + js[k]][G]++;
             mat2[i + is[k]][j + js[k]][B]++;
         }
     }
+    
+    
 }
 
 int main (int argc, char** argv) {
@@ -62,11 +65,11 @@ int main (int argc, char** argv) {
     // OpenMP initialization
     omp_set_num_threads (num_threads);
 
-    n = m = 10;
+    n = m = 10000;
 
 
     for (int it = 0; it < iter; it++)
-#pragma omp parallel for
+        #pragma omp parallel for
         for (int i = 0; i < n; i++) 
             for (int j = 0; j < m; j++) 
                 operacao (i, j);

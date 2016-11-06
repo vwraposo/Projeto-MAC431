@@ -1,5 +1,5 @@
 CC=g++-6
-CFLAGS= -ansi --std=gnu99 -Wall -pedantic -pthread
+CFLAGS= -Wall -pedantic -Ofast -march=native -fopenmp 
 
 all: ep
 
@@ -7,5 +7,4 @@ clear:
 	rm -f *.o
 
 ep: ep.cpp
-	$(CC) -fopenmp $^
-	mv a.out ep
+	$(CC) $(CFLAGS) $^ -o $@
