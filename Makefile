@@ -1,5 +1,5 @@
-CC=g++-6
-CXXFLAGS=-std=c++14 -Wall -pedantic -Ofast -march=native -fopenmp 
+CC=g++
+CXXFLAGS=-std=c++14 -Ofast -march=native -fopenmp 
 
 all: ep
 
