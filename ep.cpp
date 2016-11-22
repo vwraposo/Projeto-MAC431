@@ -27,19 +27,42 @@ int n, m, compM;
 std::atomic<ull> mat[MAX][MAX][3];
 std::atomic<ull> mat2[MAX][MAX][3];
 
-void read_matrix (char* entrada) {
-    FILE *in = fopen(entrada, "r");
+void read_im (char* entrada) {
+    FILE *in = fopen (entrada, "r");
+    char mn[2];
 
-    fscanf (in, "%d %d %d", &n, &m, &compM);
+    fscanf (in, "%s %d %d %d", &mn, &n, &m, &compM);
 
     for (int i = 0; i < n; i++)
         for (int j = 0; j < m; j++) {
             int r, g, b;
             fscanf (in, "%d %d %d", &r, &g, &b);
-            mat[i][j][R] = mat2[i][j][R] = r;
-            mat[i][j][G] = mat2[i][j][G] = g;
-            mat[i][j][B] = mat2[i][j][B] = b;
+            mat[i][j][R] = mat2[i][j][R] = r * MU;
+            mat[i][j][G] = mat2[i][j][G] = g * MU;
+            mat[i][j][B] = mat2[i][j][B] = b * MU;
         }
+
+    fclose (in);
+}
+
+void print_im () {
+    FILE *out = fopen (saida, "w");
+
+    fprintf ("P3 %d %d 255\n", n, m)
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            int r, g, b;
+            mat[i][j][R] = mat2[i][j][R] = r / MU;
+            mat[i][j][G] = mat2[i][j][G] = g / MU;
+            mat[i][j][B] = mat2[i][j][B] = b / MU;
+
+            fprintf (in, "%d %d %d ", r, g, b);
+        }
+        fprintf ("\n");
+    }
+
+    fclose (out);
 }
 
 void operacao (int i, int j) {
