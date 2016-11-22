@@ -7,7 +7,7 @@
 #include <time.h>
 #include <cmath>
 
-#define MAX 10005
+#define MAX 4005
 #define space << " " << 
 
 #define MU 1000000
@@ -49,7 +49,7 @@ void operacao (int i, int j) {
     double send[4];
     int send_cor[4];
 
-    std::cout << s space c << std::endl;
+    /* std::cout << s space c << std::endl; */
 
     if (angle >= 0 && angle <= M_PI) {
         // Vermelho na direita, azul na esquerda
@@ -84,7 +84,7 @@ void operacao (int i, int j) {
 
 ull getGreen (int i, int j) {      
     double angle = M_PI_2 - atan2 ((int) mat2[i][j][B], (int) mat2[i][j][R]); 
-    std::cout << angle << std::endl;
+    /* std::cout << angle << std::endl; */
     return ((ull) (angle * 255 * MU / (2 * M_PI)) + mat[i][j][G]) % (255 * MU);
 }
 
