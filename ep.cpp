@@ -45,21 +45,21 @@ void read_im (char* entrada) {
     fclose (in);
 }
 
-void print_im () {
+void print_im (char *saida) {
     FILE *out = fopen (saida, "w");
 
-    fprintf ("P3 %d %d 255\n", n, m)
+    fprintf (out, "P3 %d %d 255\n", n, m);
 
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
             int r, g, b;
-            mat[i][j][R] = mat2[i][j][R] = r / MU;
-            mat[i][j][G] = mat2[i][j][G] = g / MU;
-            mat[i][j][B] = mat2[i][j][B] = b / MU;
+            r = mat[i][j][R] / MU;
+            b = mat[i][j][G] / MU;
+            g = mat[i][j][B] / MU;
 
-            fprintf (in, "%d %d %d ", r, g, b);
+            fprintf (out, "%d %d %d   ", r, g, b);
         }
-        fprintf ("\n");
+        fprintf (out, "\n");
     }
 
     fclose (out);
@@ -119,16 +119,12 @@ int main (int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
-    //read_matrix (argv[1]);
+    read_im (argv[1]);
     int iter = atoi (argv[3]);
     int num_threads = atoi (argv[4]);
 
     // OpenMP initialization
     omp_set_num_threads (num_threads);
-
-    n = m = 4;
-    mat[2][2][R] = 255 * MU;
-    mat2[2][2][R] = 255 * MU;
 
     for (int it = 0; it < iter; it++) {
         // Mecher no jeito de iterar
@@ -166,6 +162,8 @@ int main (int argc, char** argv) {
             std::cout << mat[i][j][G] << " ";
         std::cout << std::endl;
     }
+
+    print_im (argv[2]);
 
     return EXIT_SUCCESS;
 }
