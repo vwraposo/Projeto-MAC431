@@ -10,6 +10,7 @@
 #define MAX 10005
 #define space << " " << 
 
+#define MU 1000000
 #define R 0
 #define G 1
 #define B 2
@@ -17,12 +18,14 @@
 // Nao sabemos o que fazer, deixar 255 com atomic<int> perde muita precisao 
 // mas nao tem atomic double, entao talvez usar critical do open mp
 
+typedef unsigned long long ull;
+
 const int is[] = {0, 1, 0, -1};
 const int js[] = {1, 0, -1, 0};
 
 int n, m, compM;
-std::atomic<int> mat[MAX][MAX][3];
-std::atomic<int> mat2[MAX][MAX][3];
+std::atomic<ull> mat[MAX][MAX][3];
+std::atomic<ull> mat2[MAX][MAX][3];
 
 void read_matrix (char* entrada) {
     FILE *in = fopen(entrada, "r");
@@ -40,7 +43,7 @@ void read_matrix (char* entrada) {
 }
 
 void operacao (int i, int j) {
-    double angle = 2 * M_PI * mat[i][j][G] / 255.;
+    double angle = 2 * M_PI * mat[i][j][G] / (255. * MU);
     double s = abs (sin (angle));
     double c = abs (cos (angle));
     double send[4];
@@ -71,7 +74,7 @@ void operacao (int i, int j) {
         int nx = i + is[k];
         int ny = j + js[k];
         if (!(nx < 0 || nx >= n || ny < 0 || ny >= m)) {
-            int delta = (255 - mat[nx][ny][send_cor[k]]) * send[k] / 1020;  
+            ull delta = (255 * MU - mat[nx][ny][send_cor[k]]) * send[k] / (1020 * MU);  
             mat2[i][j][send_cor[k]].fetch_sub (delta);
             mat2[nx][ny][send_cor[k]].fetch_add (delta);
         }
@@ -79,10 +82,10 @@ void operacao (int i, int j) {
 
 }
 
-int getGreen (int i, int j) {      
+ull getGreen (int i, int j) {      
     double angle = M_PI_2 - atan2 ((int) mat2[i][j][B], (int) mat2[i][j][R]); 
     std::cout << angle << std::endl;
-    return ((int) (angle * 255 / (2 * M_PI)) + mat[i][j][G]) % 256;
+    return ((ull) (angle * 255 * MU / (2 * M_PI)) + mat[i][j][G]) % (255 * MU);
 }
 
 
@@ -101,10 +104,11 @@ int main (int argc, char** argv) {
     omp_set_num_threads (num_threads);
 
     n = m = 4;
-    mat[2][2][R] = 255;
-    mat2[2][2][R] = 255;
+    mat[2][2][R] = 255 * MU;
+    mat2[2][2][R] = 255 * MU;
 
     for (int it = 0; it < iter; it++) {
+        // Mecher no jeito de iterar
         #pragma omp parallel for
         for (int i = 0; i < n; i++) 
             for (int j = 0; j < m; j++) 
