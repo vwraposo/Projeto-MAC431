@@ -141,7 +141,7 @@ int main (int argc, char** argv) {
                 mat[i][j][G].store (getGreen (i, j));
             }
     }
-
+    /*
     std::cout << "RED" << std::endl;
     for (int i = 0; i < n; i++) { 
         for (int j = 0; j < m; j++) 
@@ -162,7 +162,7 @@ int main (int argc, char** argv) {
             std::cout << mat[i][j][G] << " ";
         std::cout << std::endl;
     }
-
+    */
     print_im (argv[2]);
 
     return EXIT_SUCCESS;
