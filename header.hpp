@@ -86,16 +86,31 @@ void operacao (int i, int j) {
         send[3] = mat[i][j][R] * c; send_cor[3] = R;
     }
 
-    for (int k = 0; k < 4; k++) {
-        int nx = i + is[k];
-        int ny = j + js[k];
-        if (!(nx < 0 || nx >= n || ny < 0 || ny >= m)) {
-            ull delta = (255 * MU - mat[nx][ny][send_cor[k]]) * send[k] / (1020 * MU);  
-            mat2[i][j][send_cor[k]].fetch_sub (delta);
-            mat2[nx][ny][send_cor[k]].fetch_add (delta);
-        }
+
+    // Unroll
+
+    if (j+1 < m) {
+        ull delta = (255 * MU - mat[i][j+1][send_cor[0]]) * send[0] / (1020 * MU);
+        mat2[i][j][send_cor[0]].fetch_sub (delta);
+        mat2[i][j+1][send_cor[0]].fetch_add (delta);
+    }
+
+    if (i+1 < n) {
+        ull delta = (255 * MU - mat[i+1][j][send_cor[1]]) * send[1] / (1020 * MU);
+        mat2[i][j][send_cor[1]].fetch_sub (delta);
+        mat2[i+1][j][send_cor[1]].fetch_add (delta);
+    }
+
+    if (j >= 1) {
+        ull delta = (255 * MU - mat[i][j-1][send_cor[2]]) * send[2] / (1020 * MU);
+        mat2[i][j][send_cor[2]].fetch_sub (delta);
+        mat2[i][j-1][send_cor[2]].fetch_add (delta);
+    }
+
+    if (i >= 1) {
+        ull delta = (255 * MU - mat[i-1][j][send_cor[3]]) * send[3] / (1020 * MU);
+        mat2[i][j][send_cor[3]].fetch_sub (delta);
+        mat2[i-1][j][send_cor[3]].fetch_add (delta);
     }
 
 }
-
-
