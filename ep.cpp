@@ -1,4 +1,4 @@
-#include "header.hpp"
+#include "ep.hpp"
 
 int main (int argc, char** argv) {
     std::ios::sync_with_stdio (false);
@@ -17,16 +17,16 @@ int main (int argc, char** argv) {
     for (int it = 0; it < iter; it++) {
         // Mecher no jeito de iterar
         #pragma omp parallel for schedule (guided, 4)
-        for (int i = 0; i < n; i++) 
-            for (int j = 0; j < m; j++) 
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < m; j++)
                 operacao (i, j);
-        
+
         #pragma omp parallel for schedule (guided, 4)
-        for (int i = 0; i < n; i++) 
+        for (int i = 0; i < n; i++)
             for (int j = 0; j < m; j++) {
                 mat[i][j][R].store (mat2[i][j][R]);
                 mat[i][j][B].store (mat2[i][j][B]);
-                double angle = M_PI_2 - atan2 ((int) mat2[i][j][B], (int) mat2[i][j][R]); 
+                double angle = M_PI_2 - atan2 ((int) mat2[i][j][B], (int) mat2[i][j][R]);
                 mat[i][j][G].store (((ull) (angle * 255 * MU / (2 * M_PI)) + mat[i][j][G]) % (255 * MU));
             }
     }
