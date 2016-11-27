@@ -60,7 +60,7 @@ void print_im (char *saida) {
     fclose (out);
 }
 
-void operacao (int i, int j) {
+int operacao (int i, int j) {
     double angle = 2 * M_PI * mat[i][j][G] / (255. * MU);
     double s = abs (sin (angle));
     double c = abs (cos (angle));

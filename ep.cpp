@@ -14,7 +14,8 @@ int main (int argc, char** argv) {
     // OpenMP initialization
     omp_set_num_threads (num_threads);
 
-    std::atomic<int> over = 0;
+    std::atomic<int> over;
+    over.store (0);
     for (int it = 0; it < iter; it++) {
         // Mecher no jeito de iterar
         #pragma omp parallel for schedule (guided, 4)
