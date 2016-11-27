@@ -1,4 +1,4 @@
-CC=g++-6
+CC=g++
 CXXFLAGS=-Ofast -fopenmp -std=c++14 -msse2 -march=native
 PROFFLAGS=-pg -fopenmp -std=c++14 -msse2 -march=native
 
@@ -8,7 +8,7 @@ clear:
 	rm -f *.o
 
 ep: ep.cpp ep.hpp
-	$(CC) $(CXXFLAGS) -c ep.cpp
+	$(CC) $(CXXFLAGS) ep.cpp -o ep
 
 prof: ep.cpp ep.hpp
-	$(CC) $(PROFFLAGS) -c ep.cpp
+	$(CC) $(PROFFLAGS) ep.cpp -o prof
