@@ -1,5 +1,6 @@
 CC=g++
-CXXFLAGS=-pg -std=c++14 -msse2 -march=native -fopenmp
+CXXFLAGS=-std=c++14 -Ofast -msse2 -march=native -fopenmp
+PROFFLAGS=-pg -std=c++14 -msse2 -march=native -fopenmp
 
 all: ep
 
@@ -8,3 +9,6 @@ clear:
 
 ep: ep.cpp
 	$(CC) $(CXXFLAGS) $^ -o $@
+
+prof: ep.cpp
+	$(CC) $(PROFFLAGS) $^ -o $@
