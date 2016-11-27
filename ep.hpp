@@ -88,29 +88,39 @@ void operacao (int i, int j) {
 
 
     // Unroll
+    int ret = 0;
 
     if (j+1 < m) {
         ull delta = (255 * MU - mat[i][j+1][send_cor[0]]) * send[0] / (1020 * MU);
         mat2[i][j][send_cor[0]].fetch_sub (delta);
         mat2[i][j+1][send_cor[0]].fetch_add (delta);
+
+        if (mat2[i][j+1][send_cor[0]] > 255 * MU) ret = 1;
     }
 
     if (i+1 < n) {
         ull delta = (255 * MU - mat[i+1][j][send_cor[1]]) * send[1] / (1020 * MU);
         mat2[i][j][send_cor[1]].fetch_sub (delta);
         mat2[i+1][j][send_cor[1]].fetch_add (delta);
+
+        if (mat2[i+1][j][send_cor[1]] > 255 * MU) ret = 1;
     }
 
     if (j >= 1) {
         ull delta = (255 * MU - mat[i][j-1][send_cor[2]]) * send[2] / (1020 * MU);
         mat2[i][j][send_cor[2]].fetch_sub (delta);
         mat2[i][j-1][send_cor[2]].fetch_add (delta);
+
+        if (mat2[i][j-1][send_cor[2]] > 255 * MU) ret = 1;
     }
 
     if (i >= 1) {
         ull delta = (255 * MU - mat[i-1][j][send_cor[3]]) * send[3] / (1020 * MU);
         mat2[i][j][send_cor[3]].fetch_sub (delta);
         mat2[i-1][j][send_cor[3]].fetch_add (delta);
+
+        if (mat2[i-1][j][send_cor[3]] > 255 * MU) ret = 1;
     }
 
+    return ret;
 }
