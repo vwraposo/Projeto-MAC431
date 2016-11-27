@@ -1,14 +1,14 @@
 CC=g++
-CXXFLAGS=-std=c++14 -Ofast -msse2 -march=native -fopenmp
-PROFFLAGS=-pg -std=c++14 -msse2 -march=native -fopenmp
+CXXFLAGS=-Ofast -fopenmp -std=c++14 -msse2 -march=native
+PROFFLAGS=-pg -fopenmp -std=c++14 -msse2 -march=native
 
 all: ep
 
 clear:
 	rm -f *.o
 
-ep: ep.cpp
-	$(CC) $(CXXFLAGS) $^ -o $@
+ep: ep.cpp ep.hpp
+	$(CC) $(CXXFLAGS) ep.cpp -o ep
 
-prof: ep.cpp
-	$(CC) $(PROFFLAGS) $^ -o $@
+prof: ep.cpp ep.hpp
+	$(CC) $(PROFFLAGS) ep.cpp -o prof
