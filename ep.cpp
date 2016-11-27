@@ -105,13 +105,6 @@ void operacao (int i, int j) {
 
 }
 
-ull getGreen (int i, int j) {      
-    double angle = M_PI_2 - atan2 ((int) mat2[i][j][B], (int) mat2[i][j][R]); 
-    /* std::cout << angle << std::endl; */
-    return ((ull) (angle * 255 * MU / (2 * M_PI)) + mat[i][j][G]) % (255 * MU);
-}
-
-
 int main (int argc, char** argv) {
     std::ios::sync_with_stdio (false);
     if (argc != 5) {
@@ -138,7 +131,8 @@ int main (int argc, char** argv) {
             for (int j = 0; j < m; j++) {
                 mat[i][j][R].store (mat2[i][j][R]);
                 mat[i][j][B].store (mat2[i][j][B]);
-                mat[i][j][G].store (getGreen (i, j));
+                double angle = M_PI_2 - atan2 ((int) mat2[i][j][B], (int) mat2[i][j][R]); 
+                mat[i][j][G].store (((ull) (angle * 255 * MU / (2 * M_PI)) + mat[i][j][G]) % (255 * MU));
             }
     }
     /*

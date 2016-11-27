@@ -1,5 +1,5 @@
 CC=g++
-CXXFLAGS=-std=c++14 -Ofast -march=native -fopenmp 
+CXXFLAGS=-pg -std=c++14 -msse2 -march=native -fopenmp
 
 all: ep
 
