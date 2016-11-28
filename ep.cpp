@@ -2,9 +2,9 @@
 /*                    Projeto de MAC0431                           */
 /* Nomes:                                                          */
 /* Leonardo Padilha                             Nº USP: 9298295    */
-/* Lucas Santos                                 Nº USP:            */
-/* Victor da Matta                              Nº USP:            */
-/* Victor Raposo                                Nº USP:            */
+/* Lucas Santos                                 Nº USP: 9345064    */
+/* Victor da Matta                              Nº USP: 9298145    */
+/* Victor Raposo                                Nº USP: 9298020    */
 /*******************************************************************/
 #include "ep.hpp"
 

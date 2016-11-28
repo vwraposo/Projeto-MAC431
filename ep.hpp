@@ -2,9 +2,9 @@
 /*                    Projeto de MAC0431                           */
 /* Nomes:                                                          */
 /* Leonardo Padilha                             Nº USP: 9298295    */
-/* Lucas Santos                                 Nº USP:            */
-/* Victor da Matta                              Nº USP:            */
-/* Victor Raposo                                Nº USP:            */
+/* Lucas Santos                                 Nº USP: 9345064    */
+/* Victor da Matta                              Nº USP: 9298145    */
+/* Victor Raposo                                Nº USP: 9298020    */
 /*******************************************************************/
 #include <omp.h>
 #include <cstdio>
@@ -26,9 +26,6 @@
 typedef unsigned long long ull;
 
 /* Variáveis globais */
-const int is[] = {0, 1, 0, -1};
-const int js[] = {1, 0, -1, 0};
-
 int n, m, compM;
 std::atomic<ull> mat[MAX][MAX][3];
 std::atomic<ull> mat2[MAX][MAX][3];
